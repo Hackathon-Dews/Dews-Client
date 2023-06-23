@@ -1,61 +1,77 @@
 import InputForm from "../Elements/Input";
 import Button from "../Elements/Button";
-import { useState } from "react";
-import { axiosInstance } from "../../lib/axios";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { LoginUser, reset } from "../../features/authSlice";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const FormLogin = () => {
-  const [input, setInput] = useState({
-    username: "",
-    password: "",
-  });
-  const [responseMessage, setResponseMessage] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user, isLoading, isSuccess, isError, message } = useSelector(
+    (state) => state.auth
+  );
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const response = await axiosInstance.post("/login", {
-        username: input.username,
-        password: input.password,
-      });
-
-      setResponseMessage(response);
-
-      console.log(response);
-    } catch (error) {
-      console.error(error);
+  useEffect(() => {
+    if (user || isSuccess) {
+      navigate("/summarize-text");
+      console.log(user);
     }
+  }, [user, isSuccess, navigate]);
+
+  const Auth = (e) => {
+    e.preventDefault();
+    dispatch(LoginUser({ username, password }));
   };
 
-  const handleInputChange = (e) => {
-    setInput({
-      ...input,
-      [e.target.name]: e.target.value,
-    });
-  };
+  useEffect(() => {
+    if (isError) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: message,
+      });
+    }
+    if (isSuccess) {
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Berhasil Login",
+      });
+    }
+  }, [isError, isSuccess, message]);
+
+  useEffect(() => {
+    dispatch(reset());
+  }, [user, isSuccess, dispatch]);
 
   return (
-    <form onSubmit={handleSubmit}>
-      <InputForm
-        label="Username"
-        type="text"
-        placeholder="Username"
-        name="username"
-        value={input.username}
-        onChange={handleInputChange}
-      />
-      <InputForm
-        label="Password"
-        type="password"
-        placeholder="******"
-        name="password"
-        value={input.password}
-        onChange={handleInputChange}
-      />
-      <Button className="bg-blue-600 w-full">Login</Button>
-      {responseMessage && <p>{responseMessage}</p>}{" "}
-      {/* Tampilkan pesan respons */}
-    </form>
+    <div className="container">
+      <form onSubmit={Auth}>
+        <InputForm
+          label="Username"
+          type="text"
+          placeholder="Username"
+          name="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <InputForm
+          label="Password"
+          type="password"
+          placeholder="******"
+          name="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Button className="bg-blue-600 w-full">
+          {isLoading ? "Loading..." : "Login"}
+        </Button>
+      </form>
+    </div>
   );
 };
 

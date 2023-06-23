@@ -4,6 +4,7 @@ import AuthLayout from "../components/Layout/AuthLayout";
 const LoginPage = () => {
   return (
     <AuthLayout title="Login">
+
       <FormLogin />
       <p className="text-sm text-center mt-4">
         Don't have an account? {""}
