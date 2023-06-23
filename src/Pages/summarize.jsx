@@ -5,8 +5,24 @@ import { axiosInstance } from "../lib/axios";
 import { useState } from "react";
 import React from "react";
 import Languange from "../components/Fragments/Languange";
+import News from "../components/Fragments/News";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 const SummarizePage = () => {
+  const dispatch = useDispatch();
+  const summarizeCount = useSelector((state) => state.summarizeCount);
+  const navigate = useNavigate();
+
+  const handleSummarizeCount = () => {
+    if (summarizeCount < 5) {
+      dispatch(incrementSummarizeCount());
+    } else {
+      alert("You have reached the limit of summarize count");
+      navigate("/login");
+    }
+  };
+
   const [result, setResult] = useState(null);
   const [input, setInput] = useState({
     news: "",
@@ -63,7 +79,7 @@ const SummarizePage = () => {
         <div className="grid lg:grid-cols-2 gap-5 mx-10">
           <div className="">
             <h2 className="font-bold ml-14 text-3xl mb-6 ">Summarize Text</h2>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit="">
               <div className="">
                 <textarea
                   type="text"
@@ -98,8 +114,8 @@ const SummarizePage = () => {
                   </select>
                 </div>
 
-                <Button variant="bg-blue-700">
-                  {loading ? "Loading..." : "Find Your Topic"}
+                <Button variant="bg-blue-700" onClick={handleSummarizeCount}>
+                  {loading ? "Loading..." : "Summarize"}
                 </Button>
               </div>
             </form>
@@ -107,16 +123,16 @@ const SummarizePage = () => {
 
           <div className="">
             <h2 className="font-bold ml-14 text-4xl mb-5 ">Summary</h2>
-            {/* {buttonClicked && !loading && ( */}
-
-            <div className="border border-slate-600 p-4  min-h-[50vh] max-h-[50vh] rounded overflow-y-auto">
-              <h3 className="font-bold mb-3">Sentences : {data.sentences}</h3>
-              <p>{data.summary}</p>
-            </div>
-            {/* )} */}
+            {buttonClicked && !loading && (
+              <div className="border border-slate-600 p-4  min-h-[50vh] max-h-[50vh] rounded overflow-y-auto">
+                <h3 className="font-bold mb-3">Sentences : {data.sentences}</h3>
+                <p>{data.summary}</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
+      <News />
       <Footer />
     </>
   );

@@ -10,6 +10,8 @@ import HomePage from "./Pages/summarize.jsx";
 import FakeNewsPage from "./Pages/fakenews.jsx";
 import SummarizePage from "./Pages/summarize.jsx";
 import FindTopicNewsPage from "./Pages/findtopic.jsx";
+import { Provider } from "react-redux";
+import store from "./app/store.js";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +43,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>
 );

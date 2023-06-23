@@ -5,6 +5,8 @@ import { axiosInstance } from "../lib/axios";
 import { useState } from "react";
 import React from "react";
 import { Fragment } from "react";
+import Languange from "../components/Fragments/Languange";
+import News from "../components/Fragments/News";
 
 const FindTopicNewsPage = () => {
   const [result, setResult] = useState(null);
@@ -76,6 +78,7 @@ const FindTopicNewsPage = () => {
   return (
     <>
       <Navigation />
+      <Languange />
       <div className="container mx-auto">
         <h2 className="font-bold ml-14 text-3xl mb-6 ">Find Topic of News</h2>
         <div className="grid lg:grid-cols-2 gap-5 mx-10">
@@ -129,6 +132,7 @@ const FindTopicNewsPage = () => {
           </div>
         </div>
       </div>
+      <News />
       <Footer />
     </>
   );

@@ -9,6 +9,7 @@ const initialState = {
   isSuccess: false,
   isLoading: false,
   message: "",
+  summarizeCount: 0,
 };
 
 export const LoginUser = createAsyncThunk(
@@ -34,35 +35,23 @@ export const LoginUser = createAsyncThunk(
   }
 );
 
-export const GetMe = createAsyncThunk("auth/GetMe", async (_, thunkAPI) => {
-  try {
-    let token = localStorage.getItem("token");
-
-    if (!token) {
-      return thunkAPI.rejectWithValue("Login ke Akun Anda ");
-    }
-
-    const response = await axios.get(
-      "https://ventus.up.railway.app/api/auth/dashboard",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+export const Summarize = createAsyncThunk(
+  "auth/Summarize",
+  async (data, thunkAPI) => {
+    try {
+      const response = await axios.post(
+        "https://ventus.up.railway.app/api/summarize",
+        data
+      );
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data.message;
+        return thunkAPI.rejectWithValue(message);
       }
-    );
-
-    return response.data;
-  } catch (error) {
-    if (error.response) {
-      const message = error.response.data.message;
-      return thunkAPI.rejectWithValue(message);
     }
   }
-});
-
-export const LogOut = createAsyncThunk("auth/LogOut", async () => {
-  await axios.delete("https://ventus.up.railway.app/api/auth/logout");
-});
+);
 
 export const authSlice = createSlice({
   name: "auth",
@@ -78,6 +67,7 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.isSuccess = true;
       state.user = action.payload;
+      state.summarizeCount = 0; // Reset summarize count saat login berhasil
     });
     builder.addCase(LoginUser.rejected, (state, action) => {
       state.isLoading = false;
@@ -85,23 +75,25 @@ export const authSlice = createSlice({
       state.message = action.payload;
     });
 
-    //Get Dashboard
-    builder.addCase(GetMe.pending, (state) => {
+    builder.addCase(Summarize.pending, (state) => {
       state.isLoading = true;
     });
-    builder.addCase(GetMe.fulfilled, (state, action) => {
+    builder.addCase(Summarize.fulfilled, (state, action) => {
       state.isLoading = false;
       state.isSuccess = true;
-      state.user = action.payload;
+      state.summarizeCount += 1; // Increment summarize count setiap kali berhasil melakukan summarize
+
+      if (state.summarizeCount > 5 && !state.user) {
+        // Jika summarize count melebihi 5 dan pengguna belum login, set isError dan message
+        state.isError = true;
+        state.message =
+          "Anda harus login untuk melakukan summarize lebih dari 5 kali.";
+      }
     });
-    builder.addCase(GetMe.rejected, (state, action) => {
+    builder.addCase(Summarize.rejected, (state, action) => {
       state.isLoading = false;
       state.isError = true;
       state.message = action.payload;
-    });
-    builder.addCase(LogOut.fulfilled, (state) => {
-      state.user = null;
-      localStorage.removeItem("token");
     });
   },
 });

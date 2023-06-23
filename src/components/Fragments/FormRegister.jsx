@@ -17,12 +17,12 @@ const FormRegister = () => {
         name="password"
       />
       <InputForm
-        label="Password"
+        label="Confirm Password"
         type="password"
         placeholder="******"
         name="password"
       />
-      <Button className="bg-blue-600 w-full">Login</Button>
+      <Button className="bg-blue-600 w-full">Register</Button>
     </form>
   );
 };
