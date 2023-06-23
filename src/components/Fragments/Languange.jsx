@@ -16,7 +16,7 @@ const Languange = () => {
   };
 
   return (
-    <div className="container mx-10 mb-7">
+    <div className="container mx-auto px-10  mb-7">
       <Listbox value={selectedLanguage} onChange={handleLanguageChange}>
         {({ open }) => (
           <>

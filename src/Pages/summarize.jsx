@@ -4,7 +4,6 @@ import Button from "../components/Elements/Button";
 import { axiosInstance } from "../lib/axios";
 import { useState } from "react";
 import React from "react";
-import { Fragment } from "react";
 import Languange from "../components/Fragments/Languange";
 
 const SummarizePage = () => {
