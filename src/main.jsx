@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import {store} from "./app/store.js";
 import LoginPage from "./Pages/login.jsx";
 import RegisterPage from "./Pages/register.jsx";
 import ErrorPage from "./Pages/404.jsx";
@@ -11,11 +10,13 @@ import HomePage from "./Pages/summarize.jsx";
 import FakeNewsPage from "./Pages/fakenews.jsx";
 import SummarizePage from "./Pages/summarize.jsx";
 import FindTopicNewsPage from "./Pages/findtopic.jsx";
+import { Provider } from "react-redux";
+import store from "./app/store.js";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage />,
+    element: <FakeNewsPage />,
     errorElement: <ErrorPage />,
   },
   {
@@ -42,6 +43,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} store={store} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>
 );

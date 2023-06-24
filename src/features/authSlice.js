@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { axiosInstance } from "../lib/axios";
 
 axios.defaults.withCredentials = true;
 
@@ -8,22 +9,20 @@ const initialState = {
   isError: false,
   isSuccess: false,
   isLoading: false,
+  summarizeCount: 0,
   message: "",
 };
 
 export const LoginUser = createAsyncThunk(
   "auth/LoginUser",
-  async (user, thunkAPI) => {
+  async ({ username, password }, thunkAPI) => {
     try {
-      const response = await axios.post(
-        "https://ventus.up.railway.app/api/auth/login",
-        {
-          email: user.email,
-          password: user.password,
-        }
-      );
-      let token = response.data.token;
-      localStorage.setItem("token", token);
+      const response = await axiosInstance.post("/login", {
+        username,
+        password,
+      });
+      const access_token = response.data.access_token;
+      localStorage.setItem("access_token", access_token);
       return response.data;
     } catch (error) {
       if (error.response) {
@@ -36,20 +35,17 @@ export const LoginUser = createAsyncThunk(
 
 export const GetMe = createAsyncThunk("auth/GetMe", async (_, thunkAPI) => {
   try {
-    let token = localStorage.getItem("token");
+    const access_token = localStorage.getItem("access_token");
 
-    if (!token) {
-      return thunkAPI.rejectWithValue("Login ke Akun Anda ");
+    if (!access_token) {
+      return thunkAPI.rejectWithValue("Login ke Akun Anda");
     }
 
-    const response = await axios.get(
-      "https://ventus.up.railway.app/api/auth/dashboard",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axiosInstance.get("/dashboard", {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    });
 
     return response.data;
   } catch (error) {
@@ -61,7 +57,7 @@ export const GetMe = createAsyncThunk("auth/GetMe", async (_, thunkAPI) => {
 });
 
 export const LogOut = createAsyncThunk("auth/LogOut", async () => {
-  await axios.delete("https://ventus.up.railway.app/api/auth/logout");
+  await axiosInstance.delete("/logout");
 });
 
 export const authSlice = createSlice({
@@ -71,6 +67,7 @@ export const authSlice = createSlice({
     reset: (state) => initialState,
   },
   extraReducers: (builder) => {
+    // Login User
     builder.addCase(LoginUser.pending, (state) => {
       state.isLoading = true;
     });
@@ -85,7 +82,7 @@ export const authSlice = createSlice({
       state.message = action.payload;
     });
 
-    //Get Dashboard
+    // Get Dashboard
     builder.addCase(GetMe.pending, (state) => {
       state.isLoading = true;
     });
@@ -101,7 +98,7 @@ export const authSlice = createSlice({
     });
     builder.addCase(LogOut.fulfilled, (state) => {
       state.user = null;
-      localStorage.removeItem("token");
+      localStorage.removeItem("access_token");
     });
   },
 });
