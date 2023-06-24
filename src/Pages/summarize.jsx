@@ -91,7 +91,7 @@ const SummarizePage = () => {
                     htmlFor="num_sentences"
                     className="text-lg font-medium mb-2"
                   >
-                    Number of keyword to find:
+                    Number of sentences to find:
                   </label>
                   <select
                     id="num_sentences"
