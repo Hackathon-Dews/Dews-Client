@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import NewsData from "../../data/newsData.json";
 
 const News = () => {
   const [news, setNews] = useState([]);
@@ -9,20 +10,24 @@ const News = () => {
   const [perPage] = useState(6);
 
   // When hit with API
-  const fetchData = async () => {
-    try {
-      const APIkey = "f26df1bfc46040afbb4fa5ec438743a5";
-      const url = `https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=${APIkey}`;
-      const response = await axios.get(url);
-      setNews(response.data.articles);
-      console.log(response.data.articles);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //   const fetchData = async () => {
+  //     try {
+  //       const APIkey = "f26df1bfc46040afbb4fa5ec438743a5";
+  //       const url = `https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=${APIkey}`;
+  //       const response = await axios.get(url);
+  //       setNews(response.data.articles);
+  //       console.log(response.data.articles);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+
+  //   useEffect(() => {
+  //     fetchData();
+  //   }, []);
 
   useEffect(() => {
-    fetchData();
+    setNews(NewsData);
   }, []);
 
   const indexOfLastNews = currentPage * perPage;
