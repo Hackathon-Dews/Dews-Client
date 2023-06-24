@@ -1,5 +1,5 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-  baseURL: "https://dews-server.000webhostapp.com/api",
+  baseURL: "https://flask-production-19e8.up.railway.app",
 });

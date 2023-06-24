@@ -1,6 +1,5 @@
 import Navigation from "../components/Fragments/Navigation";
 import Footer from "../components/Fragments/Footer";
-import FormPredict from "../components/Fragments/FormPredict";
 import Button from "../components/Elements/Button";
 import { axiosInstance } from "../lib/axios";
 import { useState } from "react";
@@ -69,18 +68,18 @@ const FakeNews = () => {
             </div>
           </form>
           <div className="p-4 text-center">
-            {/* {buttonClicked && !loading && ( */}
-            <div className="container mx-auto py-4 ">
-              <h1 className="text-2xl mb-5">Prediction :</h1>
-              <div className="">
-                <h2 className="text-5xl font-bold ">
-                  {/* code asli */}
-                  {/* {result.prediction} */}
-                  {data.prediction.toUpperCase()}
-                </h2>
+            <h1 className="text-2xl mb-5">Prediction :</h1>
+            {buttonClicked && !loading && (
+              <div className="container mx-auto py-4 ">
+                <div className="">
+                  <h2 className="text-5xl font-bold ">
+                    {/* code asli */}
+                    {result.prediction}
+                    {/* {data.prediction.toUpperCase()} */}
+                  </h2>
+                </div>
               </div>
-            </div>
-            {/* )} */}
+            )}
           </div>
         </div>
       </div>

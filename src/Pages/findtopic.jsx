@@ -11,10 +11,12 @@ import News from "../components/Fragments/News";
 const FindTopicNewsPage = () => {
   const [result, setResult] = useState(null);
   const [input, setInput] = useState({
-    news: "",
+    text: "",
+    num_topics: "",
   });
   const [loading, setLoading] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,15 +26,14 @@ const FindTopicNewsPage = () => {
       setButtonClicked(true);
       setTimeout(async () => {
         const response = await axiosInstance.post("/topic-modeling", {
-          news: input.news,
-          num_topics: input.num_topics,
+          text: input.text,
+          num_topics: input.selectedOption,
         });
 
         setResult(response.data);
         setLoading(false);
       }, 2000);
     } catch (error) {
-      console.error(error);
       setLoading(false);
     }
   };
@@ -42,11 +43,9 @@ const FindTopicNewsPage = () => {
       handleSubmit(e);
     }
   };
-  const [selectedOption, setSelectedOption] = useState("");
 
   const handleOptionChange = (e) => {
     setSelectedOption(e.target.value);
-    console.log(e.target.value);
   };
 
   const TopicKeywords = ({ keywords }) => {
@@ -88,10 +87,10 @@ const FindTopicNewsPage = () => {
                 type="text"
                 className="text-md border border-gray-500 rounded h-[50vh] w-full py-2 px-3 placeholder: mb-4"
                 placeholder="Put your news here"
-                value={input.news}
-                onChange={(e) => setInput({ news: e.target.value })}
+                value={input.text}
+                onChange={(e) => setInput({ text: e.target.value })}
                 onKeyDown={handleKeyPress}
-                name="news"
+                name="text"
               />
               <div className="flex my-2 justify-between items-center">
                 <label
@@ -123,12 +122,12 @@ const FindTopicNewsPage = () => {
             </div>
           </form>
           <div className=" p-4 text-center h-[50vh] ">
-            {/* {buttonClicked && !loading && ( */}
-            <div className="container mx-auto py-4 ">
-              <h1 className="text-4xl font-bold mb-5">Topic Keywords</h1>
-              <TopicKeywords keywords={data.topic_keywords} />
-            </div>
-            {/* )} */}
+            {buttonClicked && !loading && (
+              <div className="container mx-auto py-4 ">
+                <h1 className="text-4xl font-bold mb-5">Topic Keywords</h1>
+                <TopicKeywords keywords={result.topic_keywords} />
+              </div>
+            )}
           </div>
         </div>
       </div>
