@@ -12,11 +12,10 @@ const FindTopicNewsPage = () => {
   const [result, setResult] = useState(null);
   const [input, setInput] = useState({
     text: "",
-    num_topics: "",
+    num_topics: 1,
   });
   const [loading, setLoading] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,25 +26,16 @@ const FindTopicNewsPage = () => {
       setTimeout(async () => {
         const response = await axiosInstance.post("/topic-modeling", {
           text: input.text,
-          num_topics: input.selectedOption,
+          num_topics: input.num_topics,
         });
-
+        console.log(response.data);
         setResult(response.data);
         setLoading(false);
       }, 2000);
     } catch (error) {
       setLoading(false);
+      console.log(response.data);
     }
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      handleSubmit(e);
-    }
-  };
-
-  const handleOptionChange = (e) => {
-    setSelectedOption(e.target.value);
   };
 
   const TopicKeywords = ({ keywords }) => {
@@ -67,12 +57,12 @@ const FindTopicNewsPage = () => {
     );
   };
 
-  const data = {
-    topic_keywords: [
-      ["pencarian", "erasikan", "jarak", "lokasi", "rov"],
-      ["kapal", "selam", "detik", "titanic", "laut"],
-    ],
-  };
+  // const data = {
+  //   topic_keywords: [
+  //     ["pencarian", "erasikan", "jarak", "lokasi", "rov"],
+  //     ["kapal", "selam", "detik", "titanic", "laut"],
+  //   ],
+  // };
 
   return (
     <>
@@ -89,30 +79,33 @@ const FindTopicNewsPage = () => {
                 placeholder="Put your news here"
                 value={input.text}
                 onChange={(e) => setInput({ text: e.target.value })}
-                onKeyDown={handleKeyPress}
                 name="text"
               />
               <div className="flex my-2 justify-between items-center">
                 <label
-                  htmlFor="numberOptions"
+                  htmlFor="num_topics"
                   className="text-lg font-medium mb-2"
                 >
-                  Which keyword to find:
+                  Number of keyword to find:
                 </label>
                 <select
-                  id="numberOptions"
-                  value={selectedOption}
-                  onChange={handleOptionChange}
+                  id="num_topics"
+                  required
+                  name="num_topics"
+                  type="number"
+                  onChange={(e) =>
+                    setInput({ ...input, num_topics: parseInt(e.target.value) })
+                  }
                   className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none mr-2"
                 >
                   <option value="">
-                    {selectedOption ? "Select Option" : "Select Option"}
+                    {loading ? "Select Option" : "Select Option"}
                   </option>
-                  <option value="1">4</option>
-                  <option value="2">8</option>
-                  <option value="3">12</option>
-                  <option value="4">16</option>
-                  <option value="5">20</option>
+                  <option value="1">5</option>
+                  <option value="2">10</option>
+                  <option value="3">15</option>
+                  <option value="4">20</option>
+                  <option value="5">25</option>
                 </select>
               </div>
 

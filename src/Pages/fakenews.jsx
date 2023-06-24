@@ -25,12 +25,10 @@ const FakeNews = () => {
           news: input.news,
         });
 
-        // console.log(response.data);
         setResult(response.data);
         setLoading(false);
       }, 2000);
     } catch (error) {
-      console.error(error);
       setLoading(false);
     }
   };
@@ -41,9 +39,9 @@ const FakeNews = () => {
     }
   };
 
-  const data = {
-    prediction: "Fake News",
-  };
+  //   const data = {
+  //     prediction: "Fake News",
+  //   };
 
   return (
     <>
